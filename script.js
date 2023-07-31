@@ -1,7 +1,6 @@
 // script.js
 // Load the CSV data and start the slideshow
 let file = "world-gdp-gross-domestic-product.csv";
-// file = "http://localhost:8000/world-gdp-gross-domestic-product.csv"; // Required to run locally
 
 function revealData(start, end) {
     d3.select("#chart-container").selectAll('*').remove();
