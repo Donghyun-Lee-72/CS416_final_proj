@@ -161,15 +161,7 @@ function revealData(start, end) {
         
         // Add event listeners to the SVG container (not individual paths)
         svg.on("click", function(event) {
-            // const targetClass = d3.event.target.getAttribute("class");
-            // if (targetClass === "line") {
-            //     const hoveredLineId = d3.event.target.getAttribute("id");
-            //     const lineData = (hoveredLineId === "gdp") ? data : data.slice(0, end - start + 1).concat(new Array(2021 - end).fill(0));
-
-            //     // Show tooltip for the hovered line
-            //     showTooltip(event, lineData);
-            // }
-            showTooltip(event, data);
+            showTooltip(event, data, end);
         }).on("mouseout", hideTooltip);
     })
     .catch(function(error) {
@@ -178,16 +170,20 @@ function revealData(start, end) {
     });
 }
 
-function showTooltip(event, d) {
-    const tooltip = d3.select("div#chart").select("div#annotation");
-    tooltip.transition().duration(200).style("opacity", 0.9);
-
+function showTooltip(event, d, end) {
     xScaleLinear = d3.scaleLinear()
         .domain([margin.left, margin.left + width])
         .range([1960, 2021]);
 
     const mouseX = d3.event.pageX;
     const yearIndex = Math.round(xScaleLinear(mouseX)) - 1960;
+    if (yearIndex+1960 > end) {
+        return;
+    }
+
+    const tooltip = d3.select("div#chart").select("div#annotation");
+    tooltip.transition().duration(200).style("opacity", 0.9);
+
     const datum = d[yearIndex];
     const tooltipContent = `Year: ${datum.year}<br>Global GDP: ${datum.gdp.toFixed(2)}<br>Annual Change: ${datum.annualChange.toFixed(2)}`;
 
