@@ -2,16 +2,13 @@
 // Load the CSV data and start the slideshow
 let file = "world-gdp-gross-domestic-product.csv";
 
-function revealData(start, end) {
-    d3.select("#chart-container").selectAll('*').remove();
+function setup() {
     d3.csv(file, function(d) {
         // Parse the data as needed (convert strings to numbers, dates, etc.)
         return {
             year: new Date(d["Date"]).getFullYear(),
             gdp: +d["GDP (Billions of US $)"],
             annualChange: +d["Annual % Change"]
-            // gdp: (new Date(d["Date"]).getFullYear() >= end ? undefined : +d["GDP (Billions of US $)"]),
-            // annualChange: (new Date(d["Date"]).getFullYear() >= end ? undefined : +d["Annual % Change"])
         };
     }).then(function(data) {
         // Data loading is complete, proceed to rendering the chart
@@ -31,33 +28,6 @@ function revealData(start, end) {
         const xScale = d3.scaleTime().domain(d3.extent(data, d => d.year)).range([0, width]);
         const yScaleGDP = d3.scaleLinear().domain([0, d3.max(data, d => d.gdp)]).range([height, 0]);
         const yScaleAnnualChange = d3.scaleLinear().domain(d3.extent(data, d => d.annualChange)).range([height, 0]);
-    
-        // Create the line generators for GDP and Annual Change
-        const lineGDP = d3.line()
-            .x(d => xScale(d.year))
-            .y(d => yScaleGDP(d.gdp));
-    
-        const lineAnnualChange = d3.line()
-            .x(d => xScale(d.year))
-            .y(d => yScaleAnnualChange(d.annualChange));
-    
-        // Add the line for Annual Change to the chart
-        chartGroup.append("path")
-            .datum(data.slice(0,end-start+1).concat(new Array(2021-end).fill(0)))
-            .attr("class", "line")
-            .attr("fill", "none")
-            .attr("stroke", "lightgreen") // You can change the color of the line for Annual Change here
-            .attr("stroke-width", 1.5)
-            .attr("d", lineAnnualChange);
-    
-        // Add the line for GDP to the chart (GDP line is above Annual Change line)
-        chartGroup.append("path")
-            .datum(data.slice(0,end-start+1).concat(new Array(2021-end).fill(0)))
-            .attr("class", "line")
-            .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 1.5)
-            .attr("d", lineGDP);
     
         // Add x axis to the chart
         chartGroup.append("g")
@@ -128,6 +98,70 @@ function revealData(start, end) {
             .text((d) => d.name)
             .style('font-size', '14px')
             .attr('alignment-baseline', 'middle');
+    })
+    .catch(function(error) {
+        // Handle any error that may occur during data loading
+        console.error("Error loading data:", error);
+    });
+}
+
+function revealData(start, end) {
+    d3.select("#chart-container").select('path#gdp').remove();
+    d3.select("#chart-container").select('path#annualChange').remove();
+    d3.csv(file, function(d) {
+        // Parse the data as needed (convert strings to numbers, dates, etc.)
+        return {
+            year: new Date(d["Date"]).getFullYear(),
+            gdp: +d["GDP (Billions of US $)"],
+            annualChange: +d["Annual % Change"]
+        };
+    }).then(function(data) {
+        // Data loading is complete, proceed to rendering the chart
+    
+        // Initialize the SVG container
+        const svg = d3.select("#chart-container");
+    
+        // Define the dimensions and margins of the graph
+        const margin = { top: 20, right: 80, bottom: 50, left: 80 };
+        const width = svg.attr("width") - margin.left - margin.right;
+        const height = svg.attr("height") - margin.top - margin.bottom;
+    
+        // Create a new SVG group (g) to contain the chart elements
+        const chartGroup = svg.select("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
+    
+        // Set the ranges for the x and y axes
+        const xScale = d3.scaleTime().domain(d3.extent(data, d => d.year)).range([0, width]);
+        const yScaleGDP = d3.scaleLinear().domain([0, d3.max(data, d => d.gdp)]).range([height, 0]);
+        const yScaleAnnualChange = d3.scaleLinear().domain(d3.extent(data, d => d.annualChange)).range([height, 0]);
+
+        // Create the line generators for GDP and Annual Change
+        const lineGDP = d3.line()
+            .x(d => xScale(d.year))
+            .y(d => yScaleGDP(d.gdp));
+    
+        const lineAnnualChange = d3.line()
+            .x(d => xScale(d.year))
+            .y(d => yScaleAnnualChange(d.annualChange));
+    
+        // Add the line for Annual Change to the chart
+        chartGroup.append("path")
+            .datum(data.slice(0,end-start+1).concat(new Array(2021-end).fill(0)))
+            .attr("id", "annualChange")
+            .attr("class", "line")
+            .attr("fill", "none")
+            .attr("stroke", "lightgreen") // You can change the color of the line for Annual Change here
+            .attr("stroke-width", 1.5)
+            .attr("d", lineAnnualChange);
+    
+        // Add the line for GDP to the chart (GDP line is above Annual Change line)
+        chartGroup.append("path")
+            .datum(data.slice(0,end-start+1).concat(new Array(2021-end).fill(0)))
+            .attr("id", "gdp")
+            .attr("class", "line")
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 1.5)
+            .attr("d", lineGDP);
     })
     .catch(function(error) {
         // Handle any error that may occur during data loading
