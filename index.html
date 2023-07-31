@@ -1,20 +1,43 @@
 <!DOCTYPE html>
-<html lang = "en">
-   <head>
-      <title>CS416 Narrative Visualization, Donghyun Lee</title>
-      <style>
-         body {background-color: white;}
-         h1 {color: red;}
-         p {color: blue;}
-      </style>
-      <meta charset="UTF-8">
-      <meta name="description" content="CS416 Narrative Visualization Final Project at UIUC">
-      <meta name="keywords" content="UIUC, CS416, Data Visualization">
-      <meta name="author" content="Donghyun Lee">
-   </head>
+<html lang="en">
+<head>
+   <title>World GDP Data Visualization</title>
+   <style>
+      body {background-color: white;}
+      h1 {color: black;}
+      #button-container {margin-bottom: 20px; margin-left: 390px; width: 215px; white-space: nowrap;}
+      .button {cursor: pointer; padding: 3px 8px; margin-right: 5px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 5px; display: inline-block;}
+   </style>
+   <meta charset="UTF-8">
+   <meta name="description" content="UIUC CS416 Narrative Visualization Project">
+   <meta name="keywords" content="UIUC, CS416, Data Visualization">
+   <meta name="author" content="Donghyun Lee">
+</head>
 
-   <body>
-      <script src="https://d3js.org/d3.v5.min.js"></script>
-      <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
-   </body>
+<body>
+   <h1>World GDP Data Visualization</h1>
+   <div id="narration" width="1000" height="600">
+      <p>This graph shows the Global GDP trend from 1960 to 2021.</p>
+      <p>Blue line shows Global GDP in Billions of US Dollars.</p>
+      <p>Green line shows annual changes from previous year in percentage.</p>
+      <p>Click on the button to see the GDP trend for each decade progressively.</p>
+      <p>Further data can be found at <a href="https://www.macrotrends.net/countries/WLD/world/gdp-gross-domestic-product">macrotrends.net</a>.</p>
+   </div>
+   <div id="button-container">
+      <div class="button" onclick="revealData(1960, 1970)">1</div>
+      <div class="button" onclick="revealData(1960, 1980)">2</div>
+      <div class="button" onclick="revealData(1960, 1990)">3</div>
+      <div class="button" onclick="revealData(1960, 2000)">4</div>
+      <div class="button" onclick="revealData(1960, 2010)">5</div>
+      <div class="button" onclick="revealData(1960, 2021)">6</div>
+   </div>
+   
+   <svg id="chart-container" width="1000" height="600">
+      <!-- SVG content will be added dynamically using JavaScript -->
+   </svg>
+
+   <script src="https://d3js.org/d3.v5.min.js"></script>
+   <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+   <script src="script.js"></script>
+</body>
 </html>
