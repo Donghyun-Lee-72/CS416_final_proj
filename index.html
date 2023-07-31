@@ -5,8 +5,21 @@
    <style>
       body {background-color: white;}
       h1 {color: black;}
+      label {font-size: 14px;}
       #button-container {margin-bottom: 20px; margin-left: 390px; width: 215px; white-space: nowrap;}
-      .button {cursor: pointer; padding: 3px 8px; margin-right: 5px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 5px; display: inline-block;}
+      .button {
+         cursor: pointer;
+         padding: 3px 8px;
+         margin-right: 5px;
+         background-color: #f0f0f0;
+         border: 1px solid #ddd;
+         border-radius: 5px;
+         display: inline-block;}
+      #annotation {
+         background-color: black;
+         /* display: none; */
+         opacity: 0;
+      }
    </style>
    <meta charset="UTF-8">
    <meta name="description" content="UIUC CS416 Narrative Visualization Project">
@@ -18,10 +31,10 @@
    <h1>World GDP Data Visualization</h1>
    <div id="narration" width="1000" height="600">
       <p>This graph shows the Global GDP trend from 1960 to 2021.</p>
-      <p>Blue line shows Global GDP in Billions of US Dollars.</p>
-      <p>Green line shows annual changes from previous year in percentage.</p>
+      <p><span style="color: steelblue">Blue</span> line: Global GDP in Billions of US Dollars.</p>
+      <p><span style="color: green">Green</span> line: annual changes from previous year in percentage.</p>
       <p>Click on the button to see the GDP trend for each decade progressively.</p>
-      <p>Further data can be found at <a href="https://www.macrotrends.net/countries/WLD/world/gdp-gross-domestic-product">macrotrends.net</a>.</p>
+      <p>Hover your mouse over the chart and right click the chart to see more details.</p>
    </div>
    <div id="button-container">
       <div class="button" onclick="revealData(1960, 1970)">1</div>
@@ -32,9 +45,21 @@
       <div class="button" onclick="revealData(1960, 2021)">6</div>
    </div>
    
-   <svg id="chart-container" width="1000" height="600">
+   <div id="chart">
       <!-- SVG content will be added dynamically using JavaScript -->
-   </svg>
+      <svg id="chart-container" width="1000" height="600"></svg>
+   
+      <!-- Annotation will be added dynamically using JavaScript -->
+      <div  id="annotation"></div>
+   </div>
+
+   <div>
+      <p>Thanks to <a href="https://www.macrotrends.net/countries/WLD/world/gdp-gross-domestic-product">macrotrends.net</a> for sharing data.</p>
+      <p>DISCLAIMER AND TERMS OF USE: HISTORICAL DATA IS PROVIDED "AS IS" AND SOLELY
+         FOR INFORMATIONAL PURPOSES - NOT FOR TRADING PURPOSES OR ADVICE.
+         NEITHER MACROTRENDS LLC NOR ANY OF OUR INFORMATION PROVIDERS WILL BE LIABLE
+         FOR ANY DAMAGES RELATING TO YOUR USE OF THE DATA PROVIDED.</p>
+   </div>
 
    <script src="https://d3js.org/d3.v5.min.js"></script>
    <script src="script.js"></script>
