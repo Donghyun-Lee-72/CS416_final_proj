@@ -1,7 +1,7 @@
 // script.js
 // Load the CSV data and start the slideshow
 let file = "world-gdp-gross-domestic-product.csv";
-file = "http://localhost:8000/world-gdp-gross-domestic-product.csv"; // Required to run locally
+// file = "http://localhost:8000/world-gdp-gross-domestic-product.csv"; // Required to run locally
 
 const svg = d3.select("#chart-container");
 const margin = { top: 20, right: 80, bottom: 50, left: 80 };
