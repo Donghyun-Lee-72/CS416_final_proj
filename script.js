@@ -1,6 +1,12 @@
 // script.js
 // Load the CSV data and start the slideshow
 let file = "world-gdp-gross-domestic-product.csv";
+file = "http://localhost:8000/world-gdp-gross-domestic-product.csv"; // Required to run locally
+
+const svg = d3.select("#chart-container");
+const margin = { top: 20, right: 80, bottom: 50, left: 80 };
+const width = svg.attr("width") - margin.left - margin.right;
+const height = svg.attr("height") - margin.top - margin.bottom;
 
 function setup() {
     d3.csv(file, function(d) {
@@ -12,14 +18,6 @@ function setup() {
         };
     }).then(function(data) {
         // Data loading is complete, proceed to rendering the chart
-    
-        // Initialize the SVG container
-        const svg = d3.select("#chart-container");
-    
-        // Define the dimensions and margins of the graph
-        const margin = { top: 20, right: 80, bottom: 50, left: 80 };
-        const width = svg.attr("width") - margin.left - margin.right;
-        const height = svg.attr("height") - margin.top - margin.bottom;
     
         // Create a new SVG group (g) to contain the chart elements
         const chartGroup = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -63,6 +61,12 @@ function setup() {
                 .attr("transform", "rotate(-90)")
                 .text("Annual Change (%)");
         
+        // Add annotation as tooltip
+        let tooltip = d3.select("div#chart").select("div#annotation")
+            .style("opacity", 0)
+            .style("position", "absolute")
+            .style("pointer-events", "none");
+        
         // Add the legend to the chart
         const legendItems = [
             { name: 'Global GDP (Bn. US$)', color: 'steelblue' },
@@ -95,7 +99,7 @@ function setup() {
             .append('text')
             .attr('x', legendRectSize + 5)
             .attr('y', legendRectSize - 5)
-            .text((d) => d.name)
+            .text(d => d.name)
             .style('font-size', '14px')
             .attr('alignment-baseline', 'middle');
     })
@@ -117,14 +121,6 @@ function revealData(start, end) {
         };
     }).then(function(data) {
         // Data loading is complete, proceed to rendering the chart
-    
-        // Initialize the SVG container
-        const svg = d3.select("#chart-container");
-    
-        // Define the dimensions and margins of the graph
-        const margin = { top: 20, right: 80, bottom: 50, left: 80 };
-        const width = svg.attr("width") - margin.left - margin.right;
-        const height = svg.attr("height") - margin.top - margin.bottom;
     
         // Create a new SVG group (g) to contain the chart elements
         const chartGroup = svg.select("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -162,9 +158,51 @@ function revealData(start, end) {
             .attr("stroke", "steelblue")
             .attr("stroke-width", 1.5)
             .attr("d", lineGDP);
+        
+        // Add event listeners to the SVG container (not individual paths)
+        svg.on("click", function(event) {
+            // const targetClass = d3.event.target.getAttribute("class");
+            // if (targetClass === "line") {
+            //     const hoveredLineId = d3.event.target.getAttribute("id");
+            //     const lineData = (hoveredLineId === "gdp") ? data : data.slice(0, end - start + 1).concat(new Array(2021 - end).fill(0));
+
+            //     // Show tooltip for the hovered line
+            //     showTooltip(event, lineData);
+            // }
+            showTooltip(event, data);
+        }).on("mouseout", hideTooltip);
     })
     .catch(function(error) {
         // Handle any error that may occur during data loading
         console.error("Error loading data:", error);
     });
 }
+
+function showTooltip(event, d) {
+    const tooltip = d3.select("div#chart").select("div#annotation");
+    tooltip.transition().duration(200).style("opacity", 0.9);
+
+    xScaleLinear = d3.scaleLinear()
+        .domain([margin.left, margin.left + width])
+        .range([1960, 2021]);
+
+    const mouseX = d3.event.pageX;
+    const yearIndex = Math.round(xScaleLinear(mouseX)) - 1960;
+    const datum = d[yearIndex];
+    const tooltipContent = `Year: ${datum.year}<br>Global GDP: ${datum.gdp.toFixed(2)}<br>Annual Change: ${datum.annualChange.toFixed(2)}`;
+
+    // Calculate tooltip position relative to the mouse cursor
+    const tooltipX = mouseX + 10;
+    const tooltipY = d3.event.pageY - 25;
+
+    tooltip.html(tooltipContent)
+        .style("left", tooltipX + "px")
+        .style("top", tooltipY + "px");
+}
+
+function hideTooltip() {
+    const tooltip = d3.select("div#chart").select("div#annotation");
+    tooltip.transition().duration(300).style("opacity", 0);
+}
+
+
