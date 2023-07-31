@@ -1,8 +1,8 @@
-# World Economy 1960-2023
+# World Economy 1960-2021
 
 This is a Narrative Visualization project for CS 416 at UIUC in SU 2023.
 
-This github repository generates a github pages to provide narrative visualization on World Economy from 1960 to 2023.
+This github repository generates a github pages to provide narrative visualization on World Economy from 1960 to 2021.
 
 Webpage for this repository can be found [here](https://donghyun-lee-72.github.io/CS416_final_proj/).
 
